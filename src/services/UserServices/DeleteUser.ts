@@ -1,11 +1,12 @@
-import { PrismaUsersRepository } from "../../repositories/prisma-user-repository";
+import { IntPrismaUserRepository } from "../../repositories/interfaces/int-prisma-user-repository";
 
-export async function DeleteUserServices(userId: string) {
-  const prismaUsersRepository = new PrismaUsersRepository();
+export class DeleteUserServices {
+  constructor(private prismaUsersRepository: IntPrismaUserRepository) {}
+  async execute(userId: string) {
+    await this.prismaUsersRepository.getById(userId);
 
-  await prismaUsersRepository.getById(userId);
+    const userDeleted = await this.prismaUsersRepository.delete(userId);
 
-  const userDeleted = await prismaUsersRepository.delete(userId);
-
-  return userDeleted;
+    return userDeleted;
+  }
 }

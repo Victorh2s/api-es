@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { CreateUserServices } from "../../../services/UserServices/CreateUser";
 import { ToolBox } from "../../../utils/toolBox";
+import { PrismaUsersRepository } from "../../../repositories/prisma-user-repository";
 
 export async function CreateUser(request: Request, response: Response) {
   const allTools = new ToolBox();
@@ -20,7 +21,9 @@ export async function CreateUser(request: Request, response: Response) {
   } = CreateUserSchema.parse(request.body);
 
   try {
-    const UserCreated = await CreateUserServices({
+    const prismaUsersRepository = new PrismaUsersRepository();
+    const createUserServices = new CreateUserServices(prismaUsersRepository);
+    const UserCreated = await createUserServices.execute({
       email,
       username,
       passwordhash,
@@ -28,8 +31,12 @@ export async function CreateUser(request: Request, response: Response) {
 
     const { userCreated } = UserCreated;
 
-    const { id, UsernameCreated, emailCreated, description } =
-      await userCreated;
+    const {
+      id,
+      email: emailCreated,
+      username: UsernameCreated,
+      description,
+    } = await userCreated;
 
     return response
       .status(200)

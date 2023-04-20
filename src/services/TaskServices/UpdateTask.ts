@@ -1,27 +1,30 @@
-import { PrismaTaskRepository } from "../../repositories/prisma-task-repository";
+import { IntPrismaTaskRepository } from "../../repositories/interfaces/int-prisma-task-repository";
 import { ToolBox } from "../../utils/toolBox";
 
-export async function UpdateTaskServices(
-  userId: string,
-  id: string,
-  stt: string,
-  finishedat: string,
-  title: string,
-  description: string
-) {
-  const prismaTaskRepository = new PrismaTaskRepository();
-  await prismaTaskRepository.checkTaskById(userId, id);
+export class UpdateTaskServices {
+  constructor(private prismaTaskRepository: IntPrismaTaskRepository) {}
 
-  const allTools = new ToolBox();
-  const status = allTools.checkStatus(stt);
+  async execute(
+    userId: string,
+    id: string,
+    stt: string,
+    finishedat: string,
+    title: string,
+    description: string
+  ) {
+    await this.prismaTaskRepository.checkTaskById(userId, id);
 
-  const taskUpdated = await prismaTaskRepository.updateTask(
-    id,
-    title,
-    description,
-    status,
-    finishedat
-  );
+    const allTools = new ToolBox();
+    const status = allTools.checkStatus(stt);
 
-  return taskUpdated;
+    const taskUpdated = await this.prismaTaskRepository.updateTask(
+      id,
+      title,
+      description,
+      status,
+      finishedat
+    );
+
+    return taskUpdated;
+  }
 }

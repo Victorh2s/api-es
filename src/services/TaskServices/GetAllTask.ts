@@ -1,9 +1,14 @@
+import { IntPrismaTaskRepository } from "../../repositories/interfaces/int-prisma-task-repository";
 import { PrismaTaskRepository } from "../../repositories/prisma-task-repository";
 
-export async function GetAllTaskServices(userId: string) {
-  const prismaTaskRepository = new PrismaTaskRepository();
+export class GetAllTaskServices {
+  constructor(private prismaTaskRepository: IntPrismaTaskRepository) {}
 
-  const allTask = await prismaTaskRepository.getAllTasks(userId);
+  async execute(userId: string) {
+    const prismaTaskRepository = new PrismaTaskRepository();
 
-  return allTask;
+    const allTask = await prismaTaskRepository.getAllTasks(userId);
+
+    return allTask;
+  }
 }

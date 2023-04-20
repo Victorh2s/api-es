@@ -3,18 +3,11 @@ const prisma = new PrismaClient();
 
 export class PrismaUsersRepository {
   async create(data: Prisma.UserCreateInput) {
-    const userCreated = await prisma.user.create({
+    const user = await prisma.user.create({
       data,
     });
 
-    const {
-      id,
-      email: emailCreated,
-      username: UsernameCreated,
-      description,
-    } = userCreated;
-
-    return { id, emailCreated, UsernameCreated, description };
+    return user;
   }
 
   async delete(userId: string) {

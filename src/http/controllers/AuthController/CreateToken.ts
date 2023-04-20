@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import { CreateTokenServices } from "../../../services/AuthServices/CreateToken";
+import { PrismaUsersRepository } from "../../../repositories/prisma-user-repository";
 
 export async function CreateToken(request: Request, response: Response) {
   const { email, password } = request.body;
 
   try {
-    const { refreshToken, token, user } = await CreateTokenServices(
+    const prismaUsersRepository = new PrismaUsersRepository();
+    const createTokenServices = new CreateTokenServices(prismaUsersRepository);
+
+    const { refreshToken, token, user } = await createTokenServices.execute(
       email,
       password
     );

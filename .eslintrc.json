@@ -3,6 +3,7 @@
     "@rocketseat/eslint-config/node"
   ],
   "rules":{
-    "prettier/prettier": ["error", { "endOfLine": "auto" }]
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
+    "no-useless-constructor":"off"
   }
 }

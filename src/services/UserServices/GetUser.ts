@@ -1,9 +1,11 @@
-import { PrismaUsersRepository } from "../../repositories/prisma-user-repository";
+import { IntPrismaUserRepository } from "../../repositories/interfaces/int-prisma-user-repository";
 
-export async function GetUniqueUser(userId: string) {
-  const prismaUsersRepository = new PrismaUsersRepository();
+export class GetUserServices {
+  constructor(private prismaUsersRepository: IntPrismaUserRepository) {}
 
-  const findUser = await prismaUsersRepository.getById(userId);
+  async execute(userId: string) {
+    const findUser = await this.prismaUsersRepository.getById(userId);
 
-  return findUser;
+    return findUser;
+  }
 }

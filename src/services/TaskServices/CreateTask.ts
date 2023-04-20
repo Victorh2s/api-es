@@ -1,27 +1,29 @@
 import { format } from "date-fns";
 import { ToolBox } from "../../utils/toolBox";
-import { PrismaTaskRepository } from "../../repositories/prisma-task-repository";
+import { IntPrismaTaskRepository } from "../../repositories/interfaces/int-prisma-task-repository";
 
-export async function CreateTaskServices(
-  userId: string,
-  title: string,
-  description: string,
-  stt: string
-) {
-  const createdat = format(new Date(), "dd/MM/yyyy");
+export class CreateTaskServices {
+  constructor(private prismaTaskRepository: IntPrismaTaskRepository) {}
 
-  const allTools = new ToolBox();
-  const status = allTools.checkStatus(stt);
+  async execute(
+    userId: string,
+    title: string,
+    description: string,
+    stt: string
+  ) {
+    const createdat = format(new Date(), "dd/MM/yyyy");
 
-  const prismaTaskRepository = new PrismaTaskRepository();
+    const allTools = new ToolBox();
+    const status = allTools.checkStatus(stt);
 
-  const createTask = await prismaTaskRepository.create({
-    title,
-    description,
-    status,
-    userId,
-    createdat,
-  });
+    const createTask = await this.prismaTaskRepository.create({
+      title,
+      description,
+      status,
+      userId,
+      createdat,
+    });
 
-  return createTask;
+    return createTask;
+  }
 }

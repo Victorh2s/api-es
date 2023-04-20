@@ -1,9 +1,11 @@
-import { PrismaTaskRepository } from "../../repositories/prisma-task-repository";
+import { IntPrismaTaskRepository } from "../../repositories/interfaces/int-prisma-task-repository";
 
-export async function DeleteTaskServices(userId: string, id: string) {
-  const prismaTaskRepository = new PrismaTaskRepository();
+export class DeleteTaskServices {
+  constructor(private prismaTaskRepository: IntPrismaTaskRepository) {}
 
-  const taskDeleted = await prismaTaskRepository.delete(userId, id);
+  async execute(userId: string, id: string) {
+    const taskDeleted = await this.prismaTaskRepository.delete(userId, id);
 
-  return taskDeleted;
+    return taskDeleted;
+  }
 }

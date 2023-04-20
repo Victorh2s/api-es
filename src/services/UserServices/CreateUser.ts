@@ -1,5 +1,5 @@
 import { hash } from "bcryptjs";
-import { PrismaUsersRepository } from "../../repositories/prisma-user-repository";
+import { IntPrismaUserRepository } from "../../repositories/interfaces/int-prisma-user-repository";
 
 interface CreateUserServicesInt {
   email: string;
@@ -7,22 +7,21 @@ interface CreateUserServicesInt {
   username: string;
 }
 
-export async function CreateUserServices({
-  email,
-  passwordhash,
-  username,
-}: CreateUserServicesInt) {
-  const prismaUsersRepository = new PrismaUsersRepository();
-  const password = await hash(passwordhash, 6);
+export class CreateUserServices {
+  constructor(private prismaUsersRepository: IntPrismaUserRepository) {}
 
-  await prismaUsersRepository.checkEmailExists(email);
-  await prismaUsersRepository.checkUsernameExistsForCreation(username);
+  async execute({ email, passwordhash, username }: CreateUserServicesInt) {
+    const password = await hash(passwordhash, 6);
 
-  const userCreated = prismaUsersRepository.create({
-    email,
-    password,
-    username,
-  });
+    await this.prismaUsersRepository.checkEmailExists(email);
+    await this.prismaUsersRepository.checkUsernameExistsForCreation(username);
 
-  return { userCreated };
+    const userCreated = this.prismaUsersRepository.create({
+      email,
+      password,
+      username,
+    });
+
+    return { userCreated };
+  }
 }

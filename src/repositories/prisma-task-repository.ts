@@ -4,7 +4,7 @@ import { ToolBox } from "../utils/toolBox";
 
 const prisma = new PrismaClient();
 
-interface CreateTaskInt {
+export interface CreateTaskInt {
   title: string;
   description: string;
   status: string;

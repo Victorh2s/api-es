@@ -1,15 +1,16 @@
-import { PrismaTaskRepository } from "../../repositories/prisma-task-repository";
+import { IntPrismaTaskRepository } from "../../repositories/interfaces/int-prisma-task-repository";
 
-export async function UpdateStatusTaskServices(
-  userId: string,
-  id: string,
-  stt: string
-) {
-  const prismaTaskRepository = new PrismaTaskRepository();
+export class UpdateStatusTaskServices {
+  constructor(private prismaTaskRepository: IntPrismaTaskRepository) {}
 
-  await prismaTaskRepository.checkTaskById(userId, id);
+  async execute(userId: string, id: string, stt: string) {
+    await this.prismaTaskRepository.checkTaskById(userId, id);
 
-  const taskUpdated = await prismaTaskRepository.updateStatusTask(id, stt);
+    const taskUpdated = await this.prismaTaskRepository.updateStatusTask(
+      id,
+      stt
+    );
 
-  return taskUpdated;
+    return taskUpdated;
+  }
 }

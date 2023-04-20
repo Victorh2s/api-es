@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import { CreateTaskServices } from "../../../services/TaskServices/CreateTask";
+import { PrismaTaskRepository } from "../../../repositories/prisma-task-repository";
 
 export async function CreateTask(request: Request, response: Response) {
   const { userId } = request;
   const { title, description, status: stt } = request.body;
   try {
-    const createdTask = await CreateTaskServices(
+    const prismaTaskRepository = new PrismaTaskRepository();
+    const createTaskServices = new CreateTaskServices(prismaTaskRepository);
+
+    const createdTask = await createTaskServices.execute(
       userId,
       title,
       description,
