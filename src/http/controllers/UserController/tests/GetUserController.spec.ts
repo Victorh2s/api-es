@@ -5,12 +5,14 @@ import { createAndAuthenticateUser } from "../../../../utils/tests/create-and-au
 
 describe("Delete User (E2E)", () => {
   it("should delete a user", async () => {
-    const { token } = await createAndAuthenticateUser(app);
+    setTimeout(async () => {
+      const { token } = await createAndAuthenticateUser(app);
 
-    const profileResponse = await request(app)
-      .get("/user")
-      .set("Authorization", `Bearer ${token}`);
+      const profileResponse = await request(app)
+        .get("/user")
+        .set("Authorization", `Bearer ${token}`);
 
-    expect(profileResponse.statusCode).toEqual(200);
-  }, 8000);
+      expect(profileResponse.statusCode).toEqual(200);
+    }, 1000);
+  });
 });

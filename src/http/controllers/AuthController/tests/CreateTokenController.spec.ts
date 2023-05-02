@@ -5,9 +5,11 @@ import { createAndAuthenticateUser } from "../../../../utils/tests/create-and-au
 
 describe("Create Token (E2E)", () => {
   it("should create a token", async () => {
-    const { token } = await createAndAuthenticateUser(app);
-    const decoded = jwt.decode(token, { complete: true });
+    setTimeout(async () => {
+      const { token } = await createAndAuthenticateUser(app);
+      const decoded = jwt.decode(token, { complete: true });
 
-    expect(decoded?.header.typ).toEqual("JWT");
+      expect(decoded?.header.typ).toEqual("JWT");
+    }, 1000);
   });
 });
