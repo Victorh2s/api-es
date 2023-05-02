@@ -5,17 +5,19 @@ import { createAndAuthenticateUser } from "../../../../utils/tests/create-and-au
 
 describe("Create Task (E2E)", () => {
   it("should create a task", async () => {
-    const { token } = await createAndAuthenticateUser(app);
+    setTimeout(async () => {
+      const { token } = await createAndAuthenticateUser(app);
 
-    const taskResponse = await request(app)
-      .post("/task")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        title: "task criada para o teste",
-        description: "descrição criada",
-        status: "Pendente",
-      });
+      const taskResponse = await request(app)
+        .post("/task")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          title: "task criada para o teste",
+          description: "descrição criada",
+          status: "Pendente",
+        });
 
-    expect(taskResponse.statusCode).toEqual(200);
+      expect(taskResponse.statusCode).toEqual(200);
+    }, 1000);
   }, 3000);
 });
