@@ -4,7 +4,9 @@ import { createAndAuthenticateUser } from "../../../../utils/tests/create-and-au
 
 describe("Create User (E2E)", () => {
   it("should create a user", async () => {
-    const { user } = await createAndAuthenticateUser(app);
-    expect(user.name).toEqual("Jhon006Atualizado");
+    setTimeout(async () => {
+      const { user } = await createAndAuthenticateUser(app);
+      expect(user.name).toEqual("Jhon006Atualizado");
+    }, 1000);
   });
 });

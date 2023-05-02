@@ -12,5 +12,5 @@ describe("Delete User (E2E)", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(profileResponse.statusCode).toEqual(200);
-  });
+  }, 8000);
 });

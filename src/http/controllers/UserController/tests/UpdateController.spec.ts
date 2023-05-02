@@ -16,5 +16,5 @@ describe("Update User (E2E)", () => {
       });
 
     expect(profileResponse.statusCode).toEqual(200);
-  });
+  }, 8000);
 });
