@@ -28,5 +28,5 @@ describe("Update status task (E2E)", () => {
       });
 
     expect(updateTask.statusCode).toEqual(200);
-  });
+  }, 3000);
 });

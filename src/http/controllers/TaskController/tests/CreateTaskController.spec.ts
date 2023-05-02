@@ -17,5 +17,5 @@ describe("Create Task (E2E)", () => {
       });
 
     expect(taskResponse.statusCode).toEqual(200);
-  });
+  }, 3000);
 });

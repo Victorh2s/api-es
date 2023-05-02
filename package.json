@@ -10,6 +10,7 @@
     "test": "vitest run --dir src/services",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
+    "test:e2e": "vitest run --dir src/http",
     "test:e2e:watch": "vitest run --dir src/http",
     "test:coverage":"vitest run --coverage"
   },
