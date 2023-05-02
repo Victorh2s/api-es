@@ -23,5 +23,5 @@ describe("Get a unique Task (E2E)", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(getTask.statusCode).toEqual(200);
-  });
+  }, 3000);
 });

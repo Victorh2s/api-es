@@ -21,5 +21,5 @@ describe("Get All Tasks (E2E)", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(getAllTasks.statusCode).toEqual(200);
-  });
+  }, 3000);
 });
