@@ -1,23 +1,26 @@
 import jwt from "jsonwebtoken";
 import { compare } from "bcryptjs";
-import { IntPrismaUserRepository } from "../../repositories/interfaces/int-prisma-user-repository";
+import { IntPrismaUserRepository } from "../../repositories/prisma/interfaces/int-prisma-user-repository";
+import { UserNotFound } from "../UserServices/errors/user-not-found";
+import { PasswordIncorrect } from "./errors/password-incorrect";
+import { InvalidCredentials } from "./errors/invalid-credentials";
 
 export class CreateTokenServices {
   constructor(private prismaUsersRepository: IntPrismaUserRepository) {}
 
   async execute(email: string, password: string) {
     if (!email || !password) {
-      throw new Error("Credencias inválidos");
+      throw new InvalidCredentials();
     }
 
     const findUser = await this.prismaUsersRepository.getByEmail(email);
 
     if (!findUser) {
-      throw new Error("User not found");
+      throw new UserNotFound();
     }
 
     if (!(await compare(password, findUser.password))) {
-      throw new Error("The password is incorrect");
+      throw new PasswordIncorrect();
     }
 
     const { id } = findUser;

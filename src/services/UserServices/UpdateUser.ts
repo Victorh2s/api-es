@@ -1,11 +1,15 @@
-import { IntPrismaUserRepository } from "../../repositories/interfaces/int-prisma-user-repository";
+import { IntPrismaUserRepository } from "../../repositories/prisma/interfaces/int-prisma-user-repository";
+
+interface UpdateUserServicesInt {
+  userId: string;
+  username: string;
+  description: string;
+}
 
 export class UpdateUserServices {
   constructor(private prismaUsersRepository: IntPrismaUserRepository) {}
 
-  async execute(userId: string, username: string, description: string) {
-    await this.prismaUsersRepository.getById(userId);
-
+  async execute({ userId, username, description }: UpdateUserServicesInt) {
     await this.prismaUsersRepository.checkUsernameExistsForUpdate(
       username,
       userId

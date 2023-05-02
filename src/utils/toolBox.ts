@@ -1,11 +1,11 @@
+import { InvalidStatus } from "./errors/invalid-status";
+
 export class ToolBox {
   checkStatus(stt: string) {
     const regex = /^(Pendente|Fazendo|Feito)$/;
 
     if (!regex.test(stt)) {
-      throw new Error(
-        "Invalid status, the options are 'Pendente', 'Fazendo', 'Feito'"
-      );
+      throw new InvalidStatus();
     }
 
     return stt;
@@ -13,5 +13,9 @@ export class ToolBox {
 
   regexPassword() {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  }
+
+  regexUsername() {
+    return /^[a-zA-Z0-9]+([._-]?[a-zA-Z0-9]+)*$/;
   }
 }

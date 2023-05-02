@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { format } from "date-fns";
-import { ToolBox } from "../utils/toolBox";
+import { ToolBox } from "../../utils/toolBox";
+import { NotAuthorized } from "../../services/TaskServices/errors/not-authorized";
+import { TaskNotFound } from "../../services/TaskServices/errors/task-not-found";
+import { UserNotFound } from "../../services/UserServices/errors/user-not-found";
 
 const prisma = new PrismaClient();
 
@@ -9,38 +11,38 @@ export interface CreateTaskInt {
   description: string;
   status: string;
   userId: string;
-  createdat: string;
 }
 
 export class PrismaTaskRepository {
-  async create({
-    title,
-    description,
-    userId,
-    status,
-    createdat,
-  }: CreateTaskInt) {
+  async create({ title, description, userId, status }: CreateTaskInt) {
+    const findUserById = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        tasks: true,
+      },
+    });
+
+    if (!findUserById) {
+      throw new UserNotFound();
+    }
+
     const createdTask = await prisma.task.create({
       data: {
         title,
         description,
         status,
         authorId: userId,
-        created_at: createdat,
+        created_at: new Date(),
       },
     });
     return createdTask;
   }
 
-  async delete(userId: string, id: string) {
+  async delete(id: string) {
     const findTask = await prisma.task.findUnique({ where: { id } });
 
     if (!findTask) {
-      throw new Error("Task not found");
-    }
-
-    if (findTask.authorId !== userId) {
-      throw new Error("You are not allowed");
+      throw new TaskNotFound();
     }
 
     await prisma.task.delete({ where: { id } });
@@ -56,29 +58,25 @@ export class PrismaTaskRepository {
     return findTask;
   }
 
-  async getUniqueTask(userId: string, id: string) {
+  async getUniqueTask(id: string) {
     const findTask = await prisma.task.findUnique({ where: { id } });
 
     if (!findTask) {
-      throw new Error("Task not found");
-    }
-
-    if (findTask.authorId !== userId) {
-      throw new Error("You are not allowed");
+      throw new TaskNotFound();
     }
 
     return findTask;
   }
 
-  async checkTaskById(userId: string, id: string) {
+  async checkAuthorizedAndTask(userId: string, id: string) {
     const findTask = await prisma.task.findUnique({ where: { id } });
 
     if (!findTask) {
-      throw new Error("Task not found");
+      throw new TaskNotFound();
     }
 
     if (findTask.authorId !== userId) {
-      throw new Error("You are not allowed");
+      throw new NotAuthorized();
     }
   }
 
@@ -102,12 +100,9 @@ export class PrismaTaskRepository {
   async updateTask(
     id: string,
     status: string,
-    finishedat: string,
     title: string,
     description: string
   ) {
-    const formatDate = format(new Date(finishedat), "dd/MM/yyyy");
-
     const updateTask = await prisma.task.update({
       where: {
         id,
@@ -116,7 +111,6 @@ export class PrismaTaskRepository {
         title,
         description,
         status,
-        finished_at: formatDate,
       },
     });
 

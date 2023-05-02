@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { CreateTokenServices } from "../../../services/AuthServices/CreateToken";
-import { PrismaUsersRepository } from "../../../repositories/prisma-user-repository";
+import { PrismaUsersRepository } from "../../../repositories/prisma/prisma-user-repository";
+import { UserNotFound } from "../../../services/UserServices/errors/user-not-found";
+import { InvalidCredentials } from "../../../services/AuthServices/errors/invalid-credentials";
+import { PasswordIncorrect } from "../../../services/AuthServices/errors/password-incorrect";
 
 export async function CreateToken(request: Request, response: Response) {
   const { email, password } = request.body;
@@ -26,7 +29,25 @@ export async function CreateToken(request: Request, response: Response) {
         user,
       });
   } catch (err: any) {
-    return response.status(400).json({
+    if (err instanceof UserNotFound) {
+      return response.status(404).json({
+        message: err.message,
+      });
+    }
+
+    if (err instanceof InvalidCredentials) {
+      return response.status(401).json({
+        message: err.message,
+      });
+    }
+
+    if (err instanceof PasswordIncorrect) {
+      return response.status(401).json({
+        message: err.message,
+      });
+    }
+
+    return response.status(500).json({
       message: err.message,
     });
   }

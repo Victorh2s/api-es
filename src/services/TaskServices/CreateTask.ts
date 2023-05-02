@@ -1,18 +1,22 @@
-import { format } from "date-fns";
 import { ToolBox } from "../../utils/toolBox";
-import { IntPrismaTaskRepository } from "../../repositories/interfaces/int-prisma-task-repository";
+import { IntPrismaTaskRepository } from "../../repositories/prisma/interfaces/int-prisma-task-repository";
+
+export interface IntCreateTaskServices {
+  userId: string;
+  title: string;
+  description: string;
+  status: string;
+}
 
 export class CreateTaskServices {
   constructor(private prismaTaskRepository: IntPrismaTaskRepository) {}
 
-  async execute(
-    userId: string,
-    title: string,
-    description: string,
-    stt: string
-  ) {
-    const createdat = format(new Date(), "dd/MM/yyyy");
-
+  async execute({
+    userId,
+    title,
+    description,
+    status: stt,
+  }: IntCreateTaskServices) {
     const allTools = new ToolBox();
     const status = allTools.checkStatus(stt);
 
@@ -21,7 +25,6 @@ export class CreateTaskServices {
       description,
       status,
       userId,
-      createdat,
     });
 
     return createTask;

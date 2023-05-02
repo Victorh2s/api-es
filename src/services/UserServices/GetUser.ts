@@ -1,4 +1,4 @@
-import { IntPrismaUserRepository } from "../../repositories/interfaces/int-prisma-user-repository";
+import { IntPrismaUserRepository } from "../../repositories/prisma/interfaces/int-prisma-user-repository";
 
 export class GetUserServices {
   constructor(private prismaUsersRepository: IntPrismaUserRepository) {}
