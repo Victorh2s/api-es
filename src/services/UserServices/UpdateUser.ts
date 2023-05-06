@@ -2,18 +2,26 @@ import { IntPrismaUserRepository } from "../../repositories/prisma/interfaces/in
 
 interface UpdateUserServicesInt {
   userId: string;
-  username: string;
-  description: string;
+  UpdateUsername: string;
+  UpdateDescription: string;
 }
 
 export class UpdateUserServices {
   constructor(private prismaUsersRepository: IntPrismaUserRepository) {}
 
-  async execute({ userId, username, description }: UpdateUserServicesInt) {
+  async execute({
+    userId,
+    UpdateUsername,
+    UpdateDescription,
+  }: UpdateUserServicesInt) {
+    const username = UpdateUsername;
+    const description = UpdateDescription;
+
     await this.prismaUsersRepository.checkUsernameExistsForUpdate(
       username,
       userId
     );
+    await this.prismaUsersRepository.checkUsername(username);
 
     const updatedUser = await this.prismaUsersRepository.update(
       userId,

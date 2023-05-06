@@ -99,9 +99,9 @@ export class PrismaTaskRepository {
 
   async updateTask(
     id: string,
-    status: string,
     title: string,
-    description: string
+    description: string,
+    status: string
   ) {
     const updateTask = await prisma.task.update({
       where: {

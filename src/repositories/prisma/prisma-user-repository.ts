@@ -1,7 +1,10 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import { EmailAlreadyExistsError } from "../../services/UserServices/errors/email-already-exists";
-import { UsernameAlreadyExists } from "../../services/UserServices/errors/username-already-exists";
 import { UserNotFound } from "../../services/UserServices/errors/user-not-found";
+import { ToolBox } from "../../utils/toolBox";
+import { UsernameAlreadyExists } from "../../services/UserServices/errors/username-already-exists";
+import { InvalidPasswordRegx } from "../../services/UserServices/errors/invalid-password-regx";
+import { InvalidUsernameRegx } from "../../services/UserServices/errors/invalid-username-regx";
 const prisma = new PrismaClient();
 
 export class PrismaUsersRepository {
@@ -122,6 +125,22 @@ export class PrismaUsersRepository {
 
     if (checkUsernameExist && checkUsernameExist.id !== userId) {
       throw new UsernameAlreadyExists();
+    }
+  }
+
+  async checkUsername(username: string) {
+    const allTools = new ToolBox();
+    const usernameValidation = allTools.regexUsername();
+    if (!usernameValidation.test(username)) {
+      throw new InvalidUsernameRegx();
+    }
+  }
+
+  async checkPassword(passwordhash: string) {
+    const allTools = new ToolBox();
+    const passwordValidation = allTools.regexPassword();
+    if (!passwordValidation.test(passwordhash)) {
+      throw new InvalidPasswordRegx();
     }
   }
 }

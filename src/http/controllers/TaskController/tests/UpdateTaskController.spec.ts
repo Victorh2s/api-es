@@ -1,12 +1,12 @@
 import request from "supertest";
 import { app } from "../../../../app";
 import { describe, expect, it } from "vitest";
-import { createAndAuthenticateUser } from "../../../../utils/tests/create-and-authenticate-user";
+import { createAuthenticateUser } from "../../../../utils/tests/create-authenticate-user";
 
 describe("Update status task (E2E)", () => {
   it("should update status task", async () => {
     setTimeout(async () => {
-      const { token } = await createAndAuthenticateUser(app);
+      const { token } = await createAuthenticateUser(app);
 
       const taskResponse = await request(app)
         .post("/task")
@@ -29,6 +29,6 @@ describe("Update status task (E2E)", () => {
         });
 
       expect(updateTask.statusCode).toEqual(200);
-    }, 3000);
-  }, 1000);
+    }, 1000);
+  });
 });

@@ -1,11 +1,15 @@
-import { Prisma, User } from "@prisma/client";
+import { Prisma, Task, User } from "@prisma/client";
 
 export interface IntPrismaUserRepository {
   create(data: Prisma.UserCreateInput): Promise<User>;
 
   delete(userId: string): Promise<String>;
 
-  getById(userId: string): Promise<User | null>;
+  getById(userId: string): Promise<
+    User & {
+      tasks: Task[];
+    }
+  >;
 
   getByEmail(email: string): Promise<User | null>;
 
@@ -18,4 +22,8 @@ export interface IntPrismaUserRepository {
   checkUsernameExistsForCreation(username: string): Promise<void>;
 
   checkUsernameExistsForUpdate(username: string, userId: string): Promise<void>;
+
+  checkUsername(username: string): Promise<void>;
+
+  checkPassword(passwordhash: string): Promise<void>;
 }

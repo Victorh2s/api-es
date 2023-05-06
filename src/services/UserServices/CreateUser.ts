@@ -18,10 +18,11 @@ export class CreateUserServices {
   }: CreateUserServicesInt): Promise<{
     user: Promise<User>;
   }> {
-    const password = await hash(passwordhash, 6);
-
     await this.prismaUsersRepository.checkEmailExists(email);
     await this.prismaUsersRepository.checkUsernameExistsForCreation(username);
+    await this.prismaUsersRepository.checkUsername(username);
+    await this.prismaUsersRepository.checkPassword(passwordhash);
+    const password = await hash(passwordhash, 6);
 
     const user = this.prismaUsersRepository.create({
       email,

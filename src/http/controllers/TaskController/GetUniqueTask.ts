@@ -16,14 +16,14 @@ export async function GetUniqueTask(request: Request, response: Response) {
     const allTaskFound = await getUniqueTaskService.execute({ userId, id });
     return response.status(200).json(allTaskFound);
   } catch (err: any) {
-    if (err instanceof TaskNotFound) {
-      return response.status(404).json({
+    if (err instanceof NotAuthorized) {
+      return response.status(401).json({
         message: err.message,
       });
     }
 
-    if (err instanceof NotAuthorized) {
-      return response.status(401).json({
+    if (err instanceof TaskNotFound) {
+      return response.status(404).json({
         message: err.message,
       });
     }

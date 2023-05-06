@@ -6,19 +6,18 @@ import { NotAuthorized } from "../../../services/TaskServices/errors/not-authori
 
 export async function UpdateTask(request: Request, response: Response) {
   const { id } = request.params;
-  const { title, description, status, finishedat } = request.body;
+  const { title, description, status } = request.body;
   const { userId } = request;
   try {
     const prismaTaskRepository = new PrismaTaskRepository();
     const updateTaskServices = new UpdateTaskServices(prismaTaskRepository);
 
     const updateTask = await updateTaskServices.execute({
-      id,
       userId,
+      id,
       title,
       description,
       status,
-      finishedat,
     });
 
     return response.status(200).json(updateTask);

@@ -1,8 +1,11 @@
-import { Prisma, User } from "@prisma/client";
+import { Prisma, User, Task } from "@prisma/client";
 import { IntPrismaUserRepository } from "../prisma/interfaces/int-prisma-user-repository";
 import { UserNotFound } from "../../services/UserServices/errors/user-not-found";
 import { EmailAlreadyExistsError } from "../../services/UserServices/errors/email-already-exists";
+import { ToolBox } from "../../utils/toolBox";
 import { UsernameAlreadyExists } from "../../services/UserServices/errors/username-already-exists";
+import { InvalidUsernameRegx } from "../../services/UserServices/errors/invalid-username-regx";
+import { InvalidPasswordRegx } from "../../services/UserServices/errors/invalid-password-regx";
 
 export class InMemoryUsersRepository implements IntPrismaUserRepository {
   public items: User[] = [];
@@ -37,8 +40,10 @@ export class InMemoryUsersRepository implements IntPrismaUserRepository {
     if (!findUserById) {
       throw new UserNotFound();
     }
+    const tasks: Task[] = [];
+    const user = { ...findUserById, tasks };
 
-    return findUserById;
+    return user;
   }
 
   async getByEmail(email: string) {
@@ -107,6 +112,22 @@ export class InMemoryUsersRepository implements IntPrismaUserRepository {
 
     if (checkUsernameExist && checkUsernameExist.id !== userId) {
       throw new UsernameAlreadyExists();
+    }
+  }
+
+  async checkUsername(username: string) {
+    const allTools = new ToolBox();
+    const usernameValidation = allTools.regexUsername();
+    if (!usernameValidation.test(username)) {
+      throw new InvalidUsernameRegx();
+    }
+  }
+
+  async checkPassword(passwordhash: string) {
+    const allTools = new ToolBox();
+    const passwordValidation = allTools.regexPassword();
+    if (!passwordValidation.test(passwordhash)) {
+      throw new InvalidPasswordRegx();
     }
   }
 }

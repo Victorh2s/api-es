@@ -19,7 +19,7 @@ export async function AuthMiddleware(
   const { authorization } = request.headers;
 
   if (!authorization) {
-    return response.sendStatus(401).json("Not authorization");
+    return response.status(401).json("Not authorization");
   }
 
   const token = authorization.replace("Bearer", "").trim();
@@ -32,7 +32,7 @@ export async function AuthMiddleware(
     const user = await prisma.user.findUnique({ where: { id } });
 
     if (!user) {
-      return response.sendStatus(401).json("Not authorization");
+      return response.status(401).json("Not authorization");
     }
 
     request.userId = id;
@@ -40,6 +40,6 @@ export async function AuthMiddleware(
 
     return next();
   } catch (error) {
-    return response.sendStatus(401);
+    return response.status(401).json("Not authorization");
   }
 }

@@ -4,10 +4,9 @@ import { ToolBox } from "../../utils/toolBox";
 export interface IntUpdateTaskServices {
   userId: string;
   id: string;
-  status: string;
-  finishedat: string;
   title: string;
   description: string;
+  status: string;
 }
 
 export class UpdateTaskServices {
@@ -16,10 +15,9 @@ export class UpdateTaskServices {
   async execute({
     userId,
     id,
-    status,
-    finishedat,
     title,
     description,
+    status,
   }: IntUpdateTaskServices) {
     await this.prismaTaskRepository.checkAuthorizedAndTask(userId, id);
 

@@ -1,22 +1,24 @@
 import request from "supertest";
 import { app } from "../../../../app";
 import { describe, expect, it } from "vitest";
-import { createAndAuthenticateUser } from "../../../../utils/tests/create-and-authenticate-user";
 
 describe("Update User (E2E)", () => {
   it("should update a user", async () => {
-    setTimeout(async () => {
-      const { token } = await createAndAuthenticateUser(app);
+    const authResponse = await request(app).post("/login").send({
+      email: "jhon002@example.com",
+      password: "Jhon@123456",
+    });
 
-      const profileResponse = await request(app)
-        .put("/user")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-          username: "Jhon006Atualizado",
-          description: "descrição atualizada",
-        });
+    const { token } = authResponse.body;
 
-      expect(profileResponse.statusCode).toEqual(200);
-    }, 1000);
+    const profileResponse = await request(app)
+      .put("/user")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        username: "Jhon000updated",
+        description: "descrição atualizada",
+      });
+
+    expect(profileResponse.statusCode).toEqual(200);
   });
 });

@@ -10,7 +10,10 @@ export async function GetUser(request: Request, response: Response) {
     const getUserServices = new GetUserServices(prismaUsersRepository);
 
     const user = await getUserServices.execute(userId);
-    return response.status(200).json(user);
+    const { id, email, username, description, tasks } = user;
+    return response
+      .status(200)
+      .json({ id, email, username, description, tasks });
   } catch (err: any) {
     if (err instanceof UserNotFound) {
       return response.status(404).json({

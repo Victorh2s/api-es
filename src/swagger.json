@@ -1,0 +1,604 @@
+{
+  "openapi":"3.0.0",
+  "info": {
+    "title": "API EasySchebule documentation",
+    "description": "Esta API foi desenvolvida para gerenciar usuários e suas respectivas tarefas. Cada usuário tem a capacidade de criar, atualizar, visualizar e excluir suas contas e tarefas, garantindo maior flexibilidade e praticidade. Além disso, a API possui um sistema de autenticação que garante a segurança dos dados e protege a privacidade das contas.",
+    "version": "1.0.0",
+    "contact": {
+      "email": "victor.henriqueoff@gmail.com"
+    }
+  },
+  "host":"easy-schebule-service.onrender.com",
+
+  "components":{
+    "securitySchemes":{
+      "bearerAuth":{
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT" 
+      }        
+    }
+  },
+  
+  "tags":[
+    {
+      "name":"login",
+      "description":"Sistema de autenticação",
+      "externalDocs":{
+        "description":"Descubra mais",
+        "url":"https://github.com/Victorh2s/api-es"
+      }
+    },
+    {
+      "name":"refreshToken",
+      "description":"Sistema de atualização de token",
+      "externalDocs":{
+        "description":"Descubra mais",
+        "url":"https://github.com/Victorh2s/api-es"
+      }
+    },
+    {
+      "name":"logout",
+      "description":"Sistema de logout",
+      "externalDocs":{
+        "description":"Descubra mais",
+        "url":"https://github.com/Victorh2s/api-es"
+      }
+    },
+    {
+      "name":"user",
+      "description":"Todas as opções disponiveis para os usuários",
+      "externalDocs":{
+        "description":"Descubra mais",
+        "url":"https://github.com/Victorh2s/api-es"
+      }
+    },
+    {
+      "name":"task",
+      "description":"Tudo sobre as tarefas",
+      "externalDocs":{
+        "description":"Descubra mais",
+        "url":"https://github.com/Victorh2s/api-es"
+      }
+    }
+    
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": ["login"],
+        "summary": "Faça login na sua conta",
+        "description": "Esta rota tem como objetivo gerar um token a partir das informações de e-mail e senha fornecidas. Caso ocorram erros durante a validação, o servidor enviará um statusCode juntamente com a resposta para indicar o problema. É importante lembrar que algumas rotas exigem o token gerado como validação, por isso, certifique-se de colocar o token recebido no campo 'authorize' para evitar problemas futuros e garantir uma excelente experiência.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                    "email":"User3@gmail.com",
+                    "password":"123456s"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login efetuado com sucesso (Retorna o Token e as informações do Refresh Token)."
+          },
+          "401":{
+            "description": "Credenciais inválidas"
+          },
+          "404": {
+            "description": "Usuário não foi encontrado no sistema"
+          },
+          "500":{
+            "description": "Internal error server"
+          }
+        }
+      }
+    },
+    "/token/refresh": {
+      "post": {
+        "tags": ["refreshToken"],
+        "summary": "Cria um novo token",
+        "description": "Esta rota tem como objetivo gerar um Refresh token quando o token expirar e se tornar inválido para uso.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "refreshToken": "6456bc1a1d4f9f9076006e85"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Refresh Token criado com sucesso"
+          },
+          "401":{
+            "description": "Refresh token inválido"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": ["logout"],
+        "summary": "Desloga o usuário",
+        "description": "Esta rota tem como objetivo deslogar o usuário da aplicação. Caso ocorram erros durante a validação, o servidor enviará um statusCode juntamente com a resposta para indicar o problema. É importante lembrar que essa rota exige o token gerado como validação, por isso, certifique-se de colocar o token recebido no campo 'authorize' para evitar problemas futuros e garantir uma excelente experiência.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+     
+        "responses": {
+          "200": {
+            "description": "Usuário deslogado"
+          },
+          "500":{
+            "description": "Internal error server"
+          }
+        }
+      }
+    },
+    "/user": {
+      "post": {
+        "tags": ["user"],
+        "summary": "Crie uma nova conta",
+        "description": "Este método foi construído para criar um novo usuário. É importante lembrar que o nome de usuário deve ter no mínimo 6 caracteres, não pode conter espaços nem caracteres especiais. Além disso, é necessário escolher uma senha forte que atenda aos critérios de segurança do sistema. Se a senha não for compatível com os requisitos do sistema, um erro será gerado como resposta para indicar o problema. Certifique-se de fornecer informações precisas e completas ao criar sua conta.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "username": "Johndoe01",
+                  "email": "johndoe01@example.com",
+                  "password":"Jhondoe@123456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario criado"
+          },
+          "409": {
+            "description": "Campo email ou Username já existe"
+          },
+          "422":{
+            "description": "Username ou Password é inválido"
+          }
+        }
+      },
+
+      "get": {
+        "tags": ["user"],
+        "summary": "Visualize todas as informações da sua conta",
+        "description":"Para acessar todas as informações da sua conta, é necessário estar autenticado. Se você ainda não fez o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', localizado na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "security":[
+         {"bearerAuth": []}
+        ],
+       
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso"
+          },
+          "404": {
+            "description": "Usuário não foi encontrado no sistema"
+          }
+        }
+      },
+
+      "put": {
+        "tags": ["user"],
+        "summary": "Atualize sua conta",
+        "description": "Para atualizar os dados da sua conta, é necessário estar autenticado. Se você ainda não fez o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', localizado na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "security":[
+          {"bearerAuth": []}
+         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "username": "Johndoe01Att",
+                  "description": "Descrição atualizada"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso"
+          },
+          "404": {
+            "description": "Usuário não foi encontrado no sistema"
+          },
+          "409": {
+            "description": "Username já existe"
+          },
+          "422": {
+            "description": "Username inválido"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["user"],
+        "summary": "Delete sua conta",
+        "description": "Para deletar sua conta, é necessário estar autenticado. Se ainda não fez o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', localizado na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "security":[
+          {"bearerAuth": []}
+         ],
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso"
+          },
+          "404": {
+            "description": "Usuário não foi encontrado no sistema"
+          }
+        }
+      }
+    },
+    "/task": {
+      "post": {
+        "tags": ["task"],
+        "summary": "Crie uma nova tarefa",
+        "description": "Para criar uma nova tarefa, é necessário estar autenticado. Se ainda não fez o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', localizado na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "security":[
+          {"bearerAuth": []}
+         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "title":"task criada para o teste",
+                  "description": "descrição criada",
+                  "status": "Pendente"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tarefa criado com sucesso"
+          },
+          "404": {
+            "description": "Usuário associado a tarefa não foi encontrado"
+          },
+          "500":{
+            "description": "Internal error server"
+          }
+        }
+      },
+
+      "get": {
+        "tags": ["task"],
+        "summary": "Encontre todas as tarefas associadas a sua conta",
+        "description": "Para encontrar todas as tarefas associadas a sua conta, é necessário estar autenticado. Se ainda não fez o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', localizado na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "security":[
+          {"bearerAuth": []}
+         ],
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso"
+          },
+          "500": {
+            "description": "Internal error server"
+          }
+        }
+      }
+
+     
+    },
+    "/task/{taskId}":{
+      "get": {
+        "tags": ["task"],
+        "summary": "Encontre uma tarefa específica.",
+        "description": "Para encontrar uma tarefa específica, é necessário inserir o ID correspondente no campo 'taskId', que é identificado como parâmetro. Além disso, é preciso estar autenticado. Caso ainda não tenha feito o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', que se encontra na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "parameters":[
+          {
+            "name":"taskId",
+            "in":"path",
+            "required":true,
+            "description": "Id da tarefa que você deseja encontrar",
+            "schema":{
+              "type": "string"
+            }
+          }
+        ],
+        "security":[
+          {"bearerAuth": []}
+         ],
+        
+       
+        "responses": {
+          "401": {
+            "description": "Você não tem autorização para visualizar essa tarefa"
+          },
+          "404": {
+            "description": "Tarefa exigida não foi encontrada no sistema"
+          },
+          "500":{
+            "description": "Internal error server"
+          }
+        }
+      },
+      "put":{
+        "tags": ["task"],
+        "summary": "Atualize uma tarefa específica",
+        "description": "Para atualizar uma tarefa específica, é necessário inserir o ID correspondente no campo 'taskId', que é identificado como parâmetro. Além disso, é preciso estar autenticado. Caso ainda não tenha feito o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', que se encontra na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "security":[
+          {"bearerAuth": []}
+         ],
+        "produces":[
+          "application/json"
+        ],
+        "parameters":[
+          {
+            "name":"taskId",
+            "in":"path",
+            "required":true,
+            "description": "Id da tarefa que você deseja atualizar",
+            "schema":{
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                    "title":"task01 atualizada com sucesso",
+                    "description":"descrição atualizada com sucesso",
+                    "status": "Pendente"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso"
+          },
+          "404": {
+            "description": "Usuário não foi encontrado no sistema"
+          },
+          "409": {
+            "description": "Username já existe"
+          },
+          "422": {
+            "description": "Username inválido"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["task"],
+        "summary": "Atualize o status de uma tarefa específica",
+        "description": "Para atualizar o status de uma tarefa específica, é necessário inserir o ID correspondente no campo 'taskId', que é identificado como parâmetro. Além disso, é preciso estar autenticado. Caso ainda não tenha feito o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', que se encontra na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "parameters":[
+          {
+            "name":"taskId",
+            "in":"path",
+            "required":true,
+            "description": "Id da tarefa que você deseja atualizar o status",
+            "schema":{
+              "type": "string"
+            }
+          }
+        ],
+        "security":[
+          {"bearerAuth": []}
+         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                    "title":"task01 atualizada com sucesso",
+                    "description":"descrição atualizada com sucesso",
+                    "status": "Pendente"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso"
+          },
+          "404": {
+            "description": "Usuário não foi encontrado no sistema"
+          },
+          "409": {
+            "description": "Username já existe"
+          },
+          "422": {
+            "description": "Username inválido"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["task"],
+        "summary": "Delete uma tarefa específica",
+        "description": "Para deletar uma tarefa específica, é necessário inserir o ID correspondente no campo 'taskId', que é identificado como parâmetro. Além disso, é preciso estar autenticado. Caso ainda não tenha feito o login, utilize a rota 'authenticate' para gerar um token. Esse token deve ser inserido no campo 'authorize', que se encontra na parte superior da página.",
+        "consumes":[
+          "multipart/form-data"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "parameters":[
+          {
+            "name":"taskId",
+            "in":"path",
+            "required":true,
+            "description": "Id da tarefa que você deseja deletar",
+            "schema":{
+              "type": "string"
+            }
+          }
+        ],
+        "security":[
+          {"bearerAuth": []}
+         ],
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso"
+          },
+          "404": {
+            "description": "Usuário não foi encontrado no sistema"
+          }
+        }
+      }
+    }
+   
+  }
+}

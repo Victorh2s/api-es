@@ -1,12 +1,16 @@
-import jwt from "jsonwebtoken";
 import { compare } from "bcryptjs";
 import { IntPrismaUserRepository } from "../../repositories/prisma/interfaces/int-prisma-user-repository";
 import { UserNotFound } from "../UserServices/errors/user-not-found";
 import { PasswordIncorrect } from "./errors/password-incorrect";
 import { InvalidCredentials } from "./errors/invalid-credentials";
+import { IntPrismaRefreshTokenRepository } from "../../repositories/prisma/interfaces/int-prisma-refreshToken-repository";
+import { GenerateTokenProvider } from "../../http/provider/GenerateTokenProvider";
 
 export class CreateTokenServices {
-  constructor(private prismaUsersRepository: IntPrismaUserRepository) {}
+  constructor(
+    private prismaUsersRepository: IntPrismaUserRepository,
+    private prismaRefreshTokenRepository: IntPrismaRefreshTokenRepository
+  ) {}
 
   async execute(email: string, password: string) {
     if (!email || !password) {
@@ -24,17 +28,12 @@ export class CreateTokenServices {
     }
 
     const { id } = findUser;
-    const token = jwt.sign({ id, email }, process.env.TOKEN_SECRET as string, {
-      expiresIn: process.env.TOKEN_EXPIRATION,
-    });
 
-    const refreshToken = jwt.sign(
-      { token },
-      process.env.REFRESH_TOKEN_SECRET as string,
-      {
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRATION,
-      }
-    );
+    const generateTokenProvider = new GenerateTokenProvider();
+    const token = generateTokenProvider.execute(id);
+
+    this.prismaRefreshTokenRepository.deleteMany(id);
+    const refreshToken = await this.prismaRefreshTokenRepository.create(id);
 
     return {
       refreshToken,

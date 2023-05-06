@@ -1,28 +1,13 @@
 import { Request, Response } from "express";
-import { z } from "zod";
 import { CreateUserServices } from "../../../services/UserServices/CreateUser";
-import { ToolBox } from "../../../utils/toolBox";
 import { PrismaUsersRepository } from "../../../repositories/prisma/prisma-user-repository";
 import { EmailAlreadyExistsError } from "../../../services/UserServices/errors/email-already-exists";
 import { UsernameAlreadyExists } from "../../../services/UserServices/errors/username-already-exists";
+import { InvalidPasswordRegx } from "../../../services/UserServices/errors/invalid-password-regx";
+import { InvalidUsernameRegx } from "../../../services/UserServices/errors/invalid-username-regx";
 
 export async function CreateUser(request: Request, response: Response) {
-  const allTools = new ToolBox();
-  const usernameValidation = allTools.regexUsername();
-  const passwordValidation = allTools.regexPassword();
-
-  const CreateUserSchema = z.object({
-    username: z.string().min(3).regex(usernameValidation),
-    email: z.string().email(),
-    password: z.string().min(6).regex(passwordValidation),
-  });
-
-  const {
-    username,
-    email,
-    password: passwordhash,
-  } = CreateUserSchema.parse(request.body);
-
+  const { username, email, password: passwordhash } = request.body;
   try {
     const prismaUsersRepository = new PrismaUsersRepository();
     const createUserServices = new CreateUserServices(prismaUsersRepository);
@@ -56,6 +41,20 @@ export async function CreateUser(request: Request, response: Response) {
         message: err.message,
       });
     }
-    throw err;
+
+    if (err instanceof InvalidPasswordRegx) {
+      return response.status(422).json({
+        message: err.message,
+      });
+    }
+
+    if (err instanceof InvalidUsernameRegx) {
+      return response.status(422).json({
+        message: err.message,
+      });
+    }
+    return response.status(500).json({
+      message: err.message,
+    });
   }
 }

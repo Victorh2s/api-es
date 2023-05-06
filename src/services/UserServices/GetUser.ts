@@ -5,7 +5,6 @@ export class GetUserServices {
 
   async execute(userId: string) {
     const findUser = await this.prismaUsersRepository.getById(userId);
-
     return findUser;
   }
 }
