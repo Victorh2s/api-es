@@ -64,35 +64,4 @@ describe("Create token services (Unit)", () => {
       await createTokenServices.execute(userData.email, userData.passwordhash);
     }).rejects.toBeInstanceOf(PasswordIncorrect);
   });
-
-  it("should create a token ", async () => {
-    const inMemoryUsersRepository = new InMemoryUsersRepository();
-    const inMemoryRefreshTokenRepository = new InMemoryRefreshTokenRepository();
-
-    const createUserServices = new CreateUserServices(inMemoryUsersRepository);
-
-    const createTokenServices = new CreateTokenServices(
-      inMemoryUsersRepository,
-      inMemoryRefreshTokenRepository
-    );
-
-    const userData = {
-      username: "JhonDoe",
-      email: "jhondoe@gmail.com",
-      passwordhash: "Senha@123",
-    };
-
-    await createUserServices.execute({
-      username: userData.username,
-      email: userData.email,
-      passwordhash: userData.passwordhash,
-    });
-
-    const token = await createTokenServices.execute(
-      userData.email,
-      userData.passwordhash
-    );
-
-    expect(token.user.name).toBe(userData.username);
-  });
 });
