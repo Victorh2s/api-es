@@ -1,7 +1,7 @@
-import { RefreshToken } from "@prisma/client";
+import { Refreshtoken } from "@prisma/client";
 
 export interface IntPrismaRefreshTokenRepository {
-  create(userId: string): Promise<RefreshToken>;
-  findById(id: string): Promise<RefreshToken>;
+  create(userId: string): Promise<Refreshtoken>;
+  findById(id: string): Promise<Refreshtoken>;
   deleteMany(ids: string): Promise<String>;
 }

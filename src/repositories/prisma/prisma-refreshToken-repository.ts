@@ -14,7 +14,7 @@ export interface CreateTaskInt {
 export class PrismaRefreshTokenRepository {
   async create(userId: string) {
     const expiresIn = dayjs().add(15, "second").unix();
-    const generateRefreshToken = await prisma.refreshToken.create({
+    const generateRefreshToken = await prisma.refreshtoken.create({
       data: {
         authorId: userId,
         expiresIn,
@@ -24,7 +24,7 @@ export class PrismaRefreshTokenRepository {
   }
 
   async findById(refreshToken: string) {
-    const RefreshToken = await prisma.refreshToken.findUnique({
+    const RefreshToken = await prisma.refreshtoken.findUnique({
       where: {
         id: refreshToken,
       },
@@ -37,7 +37,7 @@ export class PrismaRefreshTokenRepository {
   }
 
   async deleteMany(userId: string) {
-    await prisma.refreshToken.deleteMany({
+    await prisma.refreshtoken.deleteMany({
       where: { authorId: userId },
     });
 

@@ -1,16 +1,16 @@
-import { RefreshToken } from "@prisma/client";
+import { Refreshtoken } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
+import dayjs from "dayjs";
 
 import { IntPrismaRefreshTokenRepository } from "../prisma/interfaces/int-prisma-refreshToken-repository";
-import dayjs from "dayjs";
 import { InvalidRefreshToken } from "../../services/RefreshTokenServices/errors/invalid-refresh-token";
 
 export class InMemoryRefreshTokenRepository
   implements IntPrismaRefreshTokenRepository
 {
-  public items: RefreshToken[] = [];
+  public items: Refreshtoken[] = [];
 
-  async create(userId: string): Promise<RefreshToken> {
+  async create(userId: string): Promise<Refreshtoken> {
     const expiresIn = dayjs().add(15, "second").unix();
     const generateRefreshToken = {
       id: uuidv4(),
@@ -22,7 +22,7 @@ export class InMemoryRefreshTokenRepository
     return generateRefreshToken;
   }
 
-  async findById(id: string): Promise<RefreshToken> {
+  async findById(id: string): Promise<Refreshtoken> {
     const RefreshToken = this.items.find((item) => item.id === id);
 
     if (!RefreshToken) {

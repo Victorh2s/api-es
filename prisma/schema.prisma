@@ -28,10 +28,10 @@ model User {
   username String @unique
   description String?
   tasks Task[]
-  refresh_token RefreshToken?
+  refresh_token Refreshtoken?
 }
 
-model RefreshToken {
+model Refreshtoken {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   expiresIn Int
   author    User    @relation(fields: [authorId], references: [id])
