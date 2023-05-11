@@ -31,7 +31,6 @@ describe("Update status task services (Unit)", () => {
       title: "título atualizado",
       description: "decrição atualizada",
       status: "Fazendo",
-      finishedat: "14/04/2023",
     };
 
     const getTaskUpdate = await updateTaskServices.execute({
@@ -40,7 +39,6 @@ describe("Update status task services (Unit)", () => {
       title: taskUpdateData.title,
       description: taskUpdateData.description,
       status: taskUpdateData.status,
-      finishedat: taskUpdateData.finishedat,
     });
 
     expect(getTaskUpdate.id).toBe(task.id);
@@ -78,7 +76,6 @@ describe("Update status task services (Unit)", () => {
         title: task.title,
         description: task.description,
         status: "",
-        finishedat: task.finished_at,
       });
     }).rejects.toBeInstanceOf(InvalidStatus);
   });
@@ -111,7 +108,6 @@ describe("Update status task services (Unit)", () => {
         title: task.title,
         description: task.description,
         status: "Pendente",
-        finishedat: task.finished_at,
       });
     }).rejects.toBeInstanceOf(NotAuthorized);
   });
@@ -144,7 +140,6 @@ describe("Update status task services (Unit)", () => {
         title: task.title,
         status: "Pendente",
         description: task.description,
-        finishedat: task.finished_at,
       });
     }).rejects.toBeInstanceOf(TaskNotFound);
   });
