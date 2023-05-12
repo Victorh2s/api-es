@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { RouteUser } from "./routes/UserRouter";
 import { RouteTask } from "./routes/TaskRouter";
 import { RouteLogin } from "./routes/LoginRouter";
@@ -12,6 +13,8 @@ import swaggerDocument from "./swagger.json";
 export const app = express();
 
 dotenv.config();
+
+app.use(cors());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
