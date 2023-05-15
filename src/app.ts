@@ -14,7 +14,15 @@ export const app = express();
 
 dotenv.config();
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

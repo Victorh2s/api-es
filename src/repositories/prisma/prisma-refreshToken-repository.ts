@@ -13,7 +13,7 @@ export interface CreateTaskInt {
 
 export class PrismaRefreshTokenRepository {
   async create(userId: string) {
-    const expiresIn = dayjs().add(15, "second").unix();
+    const expiresIn = dayjs().add(7, "days").unix();
     const generateRefreshToken = await prisma.refreshtoken.create({
       data: {
         authorId: userId,
